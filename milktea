@@ -1,0 +1,98 @@
+#include <iostream>
+using namespace std;
+string name;
+float quant = 0, items = 0, items2 = 0, items3 = 0, payment = 0, totalPayment = 0, totalRevenue = 0, change = 0;
+int choice, choice2, choice3, computedBill = 0, clients = 0, winterMelonSold = 0, matchaSold = 0, okinawaSold = 0;
+int main()
+{
+    do {
+        cout << "Welcome to Lux's Milkteashop!\n";
+        cout << "Enter Your Name:";
+        cin >> name;
+        clients = clients + 1;
+
+        do {
+            cout << "Items available\n";
+            cout << "[1] Wintermelon - 100 \n[2] Matcha - 300 \n[3] Okinawa - 400\n";
+            do {
+                cin >> choice;
+                switch (choice)
+                {
+                case 1:
+                    cout << "How many Wintermelon milktea:";
+                    quant = 100;
+                    cin >> items;
+                    computedBill = computedBill + (quant * items);
+                    winterMelonSold = (winterMelonSold + items);
+                    break;
+                case 2:
+                    cout << "How many Matcha milktea:";
+                    quant = 300;
+                    cin >> items2;
+                    computedBill = computedBill + (quant * items2);
+                    matchaSold = (matchaSold + items2);
+                    break;
+                case 3:
+                    cout << "How many Okinawa milktea:";
+                    quant = 400;
+                    cin >> items3;
+                    computedBill = computedBill + (quant * items3);
+                    okinawaSold = (okinawaSold + items3);
+                    break;
+                default:
+                    cout << "Are you blind or what?";
+                }
+            } while (choice < 1 || choice > 3);
+            cout << "Your total bill is: " << computedBill;
+            cout << "\nDo you want to order again? [1] Yes [2] No";
+            cin >> choice2;
+        } while (choice2 == 1);
+
+        cout << "-----------------------------------------------------------\n";
+        cout << "|                      Receipt                            |\n";
+        cout << "-----------------------------------------------------------\n";
+        cout << "|  Client Number:          " << clients << "                              |\n";
+        cout << "|  WinterMelon:        100 x " << items << "                            | \n";
+        cout << "|  Matcha:             300 x " << items2 << "                            | \n";
+        cout << "|  Okinawa:            400 x " << items3 << "                            | \n";
+        cout << "-----------------------------------------------------------\n";
+        cout << "|  TotalBill: " << computedBill << "                                         | \n";
+        cout << "-----------------------------------------------------------\n";
+
+        do {
+            cout << "\nEnter your payment: ";
+            cin >> payment;
+
+            totalPayment = payment - computedBill;
+            if (totalPayment > 0) {
+                change = payment - computedBill;
+                cout << "You have a change of " << totalPayment * 1 << endl;
+            }
+            else if (totalPayment == 0) {
+                cout << "Payment complete!\n";
+            }
+            else {
+                cout << "\ninsufficient payment.";
+            }
+        } while (0 > totalPayment);
+
+        cout << "New Customer?\n [1] Yes\n [2] No (This will end the system)";
+        cin >> choice3;
+        totalRevenue = totalRevenue + computedBill;
+        items = 0, items2 = 0, items3 = 0, payment = 0, totalPayment = 0, computedBill = 0;
+
+        system("cls");
+    } while (choice3 == 1);
+
+    cout << "-----------------------------------------------------------\n";
+    cout << "|                  Total Breakdown                        |\n";
+    cout << "-----------------------------------------------------------\n";
+    cout << "|  Client Number:          " << clients << "                              |\n";
+    cout << "|  WinterMelon:        100 x " << winterMelonSold << "                            | \n";
+    cout << "|  Matcha:             300 x " << matchaSold << "                            | \n";
+    cout << "|  Okinawa:            400 x " << okinawaSold << "                            | \n";
+    cout << "-----------------------------------------------------------\n";
+    cout << "|  Total Revenue: " << totalRevenue << "                                     | \n";
+    cout << "-----------------------------------------------------------\n";
+    return 0;
+}
