@@ -1,0 +1,166 @@
+#include <iostream>
+
+// Example Demo 1
+
+// FIRST FUNCTION
+
+int main()
+{
+	const int MAX_FLIGHTS_SCHED = 2, MAX_SEAT = 5;
+
+	std::string reservation[MAX_FLIGHTS_SCHED][MAX_SEAT] = {
+		{"empty", "empty", "empty", "empty", "empty"},
+		{"empty", "empty", "empty", "empty", "empty"},
+	};
+	int choice, selectedFlight, selectedSeat;
+
+	do
+	{
+		std::cout <<
+			"--Flight--\n"
+			"1. Reserve Flight\n"
+			"2. Cancel Flight\n"
+			"3. View Flight\n"
+			"0. Exit\n"
+			": ";
+		std::cin >> choice;
+
+		system("cls");
+
+		switch (choice)
+		{
+		case 1:
+			std::cout <<
+				"--Select Flight--\n"
+				"1. AM Flight\n"
+				"2. PM Flight\n"
+				"0. Cancel\n"
+				": ";
+			std::cin >> selectedFlight;
+
+			system("cls");
+
+			selectedFlight--;
+			do {
+
+				std::cout << "--Select Seat--\n";
+				for (int i = 0; i < MAX_SEAT; i++)
+				{
+					std::cout << (i + 1) << ". " << reservation[selectedFlight][i] << "\n";
+				}
+				std::cout << "0. Exit\n";
+				std::cout << ":";
+				std::cin >> selectedSeat;
+
+				if (selectedSeat == 0) break;
+
+				selectedSeat--;
+
+				if (selectedSeat < 0 || selectedSeat >= MAX_SEAT) {
+					std::cout << "Please Selec from seats range\n\n\n";
+
+					system("pause");
+					system("cls");
+					continue;
+				}
+
+				if (reservation[selectedFlight][selectedSeat] == "empty") {
+					std::string name;
+
+					std::cout << "Enter your name: ";
+					std::cin >> name;
+					reservation[selectedFlight][selectedSeat] = name;
+
+					system("cls");
+					break;
+				}
+				else {
+					std::cout << "Please Selec from empty seats\n\n\n";
+
+					system("pause");
+					system("cls");
+				}
+			} while (true);
+
+			break;
+		case 2:
+			std::cout <<
+				"--Select Flight--\n"
+				"1. AM Flight\n"
+				"2. PM Flight\n"
+				"0. Cancel\n"
+				": ";
+			std::cin >> selectedFlight;
+
+
+			system("cls");
+
+			if (selectedFlight == 0) break;
+
+			selectedFlight--;
+			do {
+
+				std::cout << "--Select Seat--\n";
+				for (int i = 0; i < MAX_SEAT; i++)
+				{
+					std::cout << (i + 1) << ". " << reservation[selectedFlight][i] << "\n";
+				}
+				std::cout << "0. Exit\n";
+				std::cout << ":";
+				std::cin >> selectedSeat;
+
+				if (selectedSeat == 0) break;
+
+				selectedSeat--;
+
+				if (selectedSeat < 0 || selectedSeat >= MAX_SEAT) {
+					std::cout << "Please Selec from seats range\n\n\n";
+
+					system("pause");
+					system("cls");
+					continue;
+				}
+
+				if (reservation[selectedFlight][selectedSeat] == "empty") {
+					std::cout << "Please Selec from occupied seats\n\n\n";
+
+					system("pause");
+					system("cls");
+				}
+				else {
+					reservation[selectedFlight][selectedSeat] = "empty";
+
+					std::cout << "Seat are now empty\n\n\n";
+
+					system("pause");
+					system("cls");
+					break;
+				}
+			} while (true);
+
+			break;
+		case 3:
+			std::cout << "--AM Seats--\n";
+			for (int i = 0; i < MAX_SEAT; i++)
+			{
+				std::cout << (i + 1) << ". " << reservation[0][i] << "\n";
+			}
+
+			std::cout << "\n";
+
+			std::cout << "--PM Seats--\n";
+			for (int i = 0; i < MAX_SEAT; i++)
+			{
+				std::cout << (i + 1) << ". " << reservation[1][i] << "\n";
+			}
+
+			system("pause");
+			system("cls");
+			break;
+		case 0:
+			exit(0);
+		default:
+			break;
+		}
+	} while (true);
+}
