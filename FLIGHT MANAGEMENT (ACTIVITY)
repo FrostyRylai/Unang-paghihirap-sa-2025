@@ -1,0 +1,242 @@
+#include <iostream>
+
+// Example Demo 1
+
+/* ADDED FEATURES 
+1. FUNCTIONS
+2. 5 SCHEDULE
+3. 10 SEATS
+4. PREVENT INFINITE LOOP (FIXED ISSUE)
+5. PREVENT ERROR IF USER ENTERED STRING INSTEAD OF INT (FIXED ISSUE)
+*/
+
+// FIRST FUNCTION
+int AcceptChoice();
+
+// SECOND FUNCTION
+int AcceptSelectedFlight();
+
+// THIRD FUNCTION
+int AcceptSelectedSeat(const int MAX_SEAT, std::string reservation[5][10], int selectedFlight);
+
+// FOURTH FUNCTION
+void ShowSeatReservation(const std::string reservation[5][10], int flightIndex);
+
+
+
+int main()
+{
+	const int MAX_FLIGHTS_SCHED = 5, MAX_SEAT = 10;
+
+	std::string reservation[MAX_FLIGHTS_SCHED][MAX_SEAT] = {
+		{"empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"},
+		{"empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"},
+		{"empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"},
+		{"empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"},
+		{"empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"},
+	};
+	int choice, selectedFlight, selectedSeat;
+
+	do
+	{
+		choice = AcceptChoice(); // FIRST FUNCTION
+
+		system("cls");
+
+		switch (choice)
+		{
+		case 1:
+
+			do {
+				selectedFlight = AcceptSelectedFlight(); // SECOND FUNCTION
+				system("cls");
+			} while (selectedFlight < 0 || selectedFlight > 5); // PREVENT THE SYSTEM FROM INFINITE LOOP AFTER ENTERING CHOICES THAT IS NOT INCLUDED IN MENU
+
+			system("cls");
+			if (selectedFlight == 0) break;
+
+			selectedFlight--;
+			do {
+				selectedSeat = AcceptSelectedSeat(MAX_SEAT, reservation, selectedFlight); //THIRD FUNCTION
+				if (selectedSeat == 0) break;
+	
+
+				selectedSeat--;
+
+				if (selectedSeat < 0 || selectedSeat >= MAX_SEAT) {
+					std::cout << "Please Selec from seats range\n\n\n";
+
+					system("pause");
+					system("cls");
+					continue;
+				}
+
+				if (reservation[selectedFlight][selectedSeat] == "empty") {
+					std::string name;
+
+					std::cout << "Enter your name: ";
+					std::cin >> name;
+					reservation[selectedFlight][selectedSeat] = name;
+
+					system("cls");
+					break;
+				}
+				else {
+					std::cout << "Please Selec from empty seats\n\n\n";
+
+					system("pause");
+					system("cls");
+				}
+			} while (true);
+
+			break;
+		case 2:
+			do {
+				selectedFlight = AcceptSelectedFlight(); // SECOND FUNCTION
+				system("cls");
+			} while (selectedFlight < 0 || selectedFlight > 5); // PREVENT THE SYSTEM FROM INFINITE LOOP AFTER ENTERING CHOICES THAT IS NOT INCLUDED IN MENU
+
+			system("cls");
+
+			if (selectedFlight == 0) break;
+
+			selectedFlight--;
+			do {
+
+				selectedSeat = AcceptSelectedSeat(MAX_SEAT, reservation, selectedFlight); // THIRD FUNCTION
+
+				if (selectedSeat == 0) break;
+
+				selectedSeat--;
+
+				if (selectedSeat < 0 || selectedSeat >= MAX_SEAT) {
+					std::cout << "Please Selec from seats range\n\n\n";
+
+					system("pause");
+					system("cls");
+					continue;
+				}
+
+				if (reservation[selectedFlight][selectedSeat] == "empty") {
+					std::cout << "Please Selec from occupied seats\n\n\n";
+
+					system("pause");
+					system("cls");
+				}
+				else {
+					reservation[selectedFlight][selectedSeat] = "empty";
+
+					std::cout << "Seat are now empty\n\n\n";
+
+					system("pause");
+					system("cls");
+					break;
+				}
+			} while (true);
+
+			break;
+		case 3:
+			std::cout << "--1:00 AM - 4:00 AM Seats--\n";
+			ShowSeatReservation(reservation,0); //FOURTH FUNCTION
+			
+			std::cout << "--5:00 AM - 8:00 AM--\n";
+			ShowSeatReservation(reservation, 1); //FOURTH FUNCTION
+
+			std::cout << "--9:00 AM - 1:00 PM--\n";
+			ShowSeatReservation(reservation, 2); //FOURTH FUNCTION
+
+			std::cout << "--2:00 PM - 5:00 PM--\n";
+			ShowSeatReservation(reservation, 3); //FOURTH FUNCTION
+
+			std::cout << "--6:00 PM - 9:00 PM--\n";
+			ShowSeatReservation(reservation, 4); //FOURTH FUNCTION
+
+			system("pause");
+			system("cls");
+			break;
+		case 0:
+			exit(0);
+		default:
+			break;
+		}
+	} while (true);
+}
+
+//FIRST FUNCTION
+int AcceptChoice() {
+	int choice;
+	std::cout <<
+		"--Flight--\n"
+		"1. Reserve Flight\n"
+		"2. Cancel Flight\n"
+		"3. View Flight\n"
+		"0. Exit\n"
+		": ";
+	std::cin >> choice;
+
+	return choice;
+}
+
+//SECOND FUNCTION
+int AcceptSelectedFlight() {
+	int selectedFlight;
+
+	std::cout <<
+		"--Select Flight--\n"
+		"1. 1:00 AM - 4:00 AM Flight\n"
+		"2. 5:00 AM - 8:00 AM Flight\n"
+		"3. 9:00 AM - 1:00 PM Flight\n"
+		"4. 2:00 PM - 5:00 PM Flight\n"
+		"5. 6:00 PM - 9:00 PM Flight\n"
+		"0. Cancel\n";
+		// RESET IF IT INPUT DIFFERENT DATA TYPE (STRING)
+		do {
+			std::cout << ": ";
+			std::cin >> selectedFlight;
+			if (std::cin.fail()) {
+				std::cout << "Invalid input. Please enter a valid flight (integer).\n";
+
+				std::cin.clear();  // Clear the error flag so we can continue reading from std::cin
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Ignore the invalid input
+
+				continue;  
+			}
+			break;
+		} while (true);
+
+	return selectedFlight;
+}
+
+//THIRD FUNCTION
+int AcceptSelectedSeat(const int MAX_SEAT, std::string reservation[5][10], int selectedFlight) {
+	int selectedSeat;
+	std::cout << "--Select Seat--\n";
+	for (int i = 0; i < MAX_SEAT; i++)
+	{
+		std::cout << (i + 1) << ". " << reservation[selectedFlight][i] << "\n";
+	}
+	std::cout << "0. Exit\n";
+	// RESET IF IT INPUT DIFFERENT DATA TYPE (STRING)
+	do {
+		std::cout << ": ";
+		std::cin >> selectedSeat;
+		if (std::cin.fail()) {
+			std::cout << "Invalid input. Please enter a valid seat number (integer).\n";
+
+			std::cin.clear();  // Clear the error flag so we can continue reading from std::cin
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Ignore the invalid input
+
+			continue;
+		}
+		break;
+	} while (true);
+	return selectedSeat;
+}
+
+// FOURTH FUNCTION
+void ShowSeatReservation(const std::string reservation[5][10], int flightIndex) {
+	for (int i = 0; i < 10; i++) {
+		std::cout << (i + 1) << ". " << reservation[flightIndex][i] << "\n"; 
+	}
+	std::cout << "\n";
+}
