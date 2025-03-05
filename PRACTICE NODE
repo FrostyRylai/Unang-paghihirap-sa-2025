@@ -13,7 +13,7 @@ struct StudentData {
 struct StudentQueueNode {
 	StudentData data;
 
-	StudentQueueNode* next;
+	StudentQueueNode* next = nullptr;
 };
 
 void EnterInstruction(string instruction, string& data);
