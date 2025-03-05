@@ -1,0 +1,209 @@
+#include <array>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct StudentData {
+	int id = 0;
+	string name = "", course = "", year = "";
+	int age = 0;
+};
+
+struct StudentQueueNode {
+	StudentData data;
+
+	StudentQueueNode* next;
+};
+
+void EnterInstruction(string instruction, string& data);
+void EnterInstructionInt(string instruction, int& data);
+
+StudentData EnterData(int& counter);
+
+void MainMenu(const string INSTRUCTIONS[], const int MAX, int& choice);
+
+void CreateData(StudentQueueNode*& head, StudentQueueNode*& tail, int& counter);
+
+void EnrolleesList(StudentQueueNode* head);
+
+void ViewEnrollees(StudentQueueNode* head);
+
+void EnrolleesList(StudentQueueNode* head);
+
+void SearchNode(StudentQueueNode* head);
+
+int main() {
+	const string INSTRUCTIONS[] = { "Input Data", "Read" };
+	const int MAX = end(INSTRUCTIONS) - begin(INSTRUCTIONS);
+
+	int choice, counter = 0;
+	StudentQueueNode* head = nullptr, * tail = nullptr;
+
+	do {
+		MainMenu(INSTRUCTIONS, MAX, choice);
+
+		switch (choice) {
+		case 1:
+			CreateData(head, tail, counter);
+			break;
+
+		case 2:
+			ViewEnrollees(head);
+			break;
+
+		case 0:
+			exit(0);
+
+		default:
+			cout << "Input only valid options";
+			break;
+		}
+	} while (true);
+	system("pause");
+	return 0;
+}
+
+void EnterInstruction(string instruction, string& data) {
+	cout << instruction;
+	getline(cin, data);
+}
+
+void EnterInstructionInt(string instruction, int& data) {
+	cout << instruction;
+	cin >> data;
+}
+
+StudentData EnterData(int& counter) {
+	StudentData data;
+
+	cout << "Fill up the following information:\n";
+	cin.ignore();
+	EnterInstruction("Enter Name: ", data.name);
+	EnterInstruction("Enter Course: ", data.course);
+	EnterInstruction("Enter Year: ", data.year);
+	EnterInstructionInt("Enter Age: ", data.age);
+
+	data.id = counter;
+	system("cls");
+	return data;
+}
+
+void MainMenu(const string INSTRUCTIONS[], const int MAX, int& choice) {
+	cout << "Main Menu: \n\n";
+	if (MAX > 0) {
+		for (int i = 0; i < MAX; i++) {
+			cout << i + 1 << ": " << INSTRUCTIONS[i] << endl;
+		}
+		cout << "0. Exit\n";
+		cout << "::";
+		cin >> choice;
+	}
+	else {
+		cout << "No Functions Yet are Available\n\n\n";
+	}
+	system("cls");
+}
+
+void CreateData(StudentQueueNode*& head, StudentQueueNode*& tail, int& counter) {
+	StudentQueueNode* temp = new StudentQueueNode;
+
+	if (head) {
+		temp->data = EnterData(counter);
+
+		tail->next = temp;
+
+		tail = temp;
+
+		cout << "Student Information Added\n\n";
+	}
+
+	else {
+		temp->data = EnterData(counter);
+
+		head = temp;
+		tail = temp;
+
+		cout << "First Enroelee Created\n\n";
+	}
+
+	counter++;
+}
+
+void EnrolleesList(StudentQueueNode* head) {
+	StudentQueueNode* curr;
+	int counter = 1;
+
+	if (!head) return;
+
+	curr = head;
+
+	do {
+		cout << counter << ". " << curr->data.name << "| ID: " << curr->data.id << endl;
+
+		if (!curr->next) {
+			return; // 5th step
+		}
+
+		curr = curr->next;
+		counter++;
+	} while (true);
+}
+
+void SearchNode(StudentQueueNode* head) {
+	StudentQueueNode* curr = head;
+	int searchId;
+	string convertedStatus;
+
+	EnrolleesList(head);
+	cout << "Search for ID: ";
+	cin >> searchId;
+
+	curr = head;
+	do {
+		while (curr) {
+
+			if (curr->data.id == searchId) {
+				cout << curr->data.id << ": " << curr->data.name
+					<< " Course:" << curr->data.course << endl
+					<< " Year:" << curr->data.year << endl
+					<< " Age:" << curr->data.age << endl;
+			}
+			curr = curr->next;
+		}
+	} while (true);
+}
+
+void ViewEnrollees(StudentQueueNode* head) {
+	cout << "Full Enrollees List:\n";
+	if (head) {
+		do {
+			int choice;
+
+			EnrolleesList(head);
+			cout << "----------\n"
+				<< "1. Check Full Details\n"
+				<< "0. exit\n"
+				<< ":: ";
+			cin >> choice;
+
+			switch (choice) {
+			case 1:
+				SearchNode(head);
+				break;
+			case 0:
+				return;
+			default:
+				cout << "Select only from options.\n";
+				system("pause");
+				system("cls");
+				continue;
+			}
+		} while (true);
+	}
+	else {
+		cout << "There is no to do list yet\n\n";
+		system("pause");
+		system("cls");
+	}
+}
