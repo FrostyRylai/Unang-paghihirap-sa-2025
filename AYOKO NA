@@ -1,0 +1,341 @@
+#include <array>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct UserInfo {
+	int id = 0;
+	int score = 0;
+	string name = "";
+};
+
+struct QueueNode {
+	UserInfo data;
+
+	QueueNode* next = nullptr;
+};
+
+// MAIN MENU
+void MainMenu(const string INSTRUCTIONS[], const int MAX, int& choice);
+
+// INPUT USER'S DATA (CREATE)
+void CreateData(QueueNode*& head, QueueNode*& tail, int& counter);
+
+void EnterInstruction(string instruction, string& data);
+UserInfo EnterData(int& counter);
+
+//START OF THE GAME
+void Greetings();
+void QuestionGenerator(const int MAX_NUMBERS, string questionList[1][10]);
+void AnswerGenerator(const int MAX_NUMBERS, string answerList[10]);
+UserInfo CheckingAnswer(int& score, const int MAX_NUMBERS, string checkList[10], string answerList[10], string questionList[2][10]);
+
+// VIEW USER'S INFO (READ)
+void UserList(QueueNode* head);
+void ViewUsers(QueueNode* head, string checkList[10]);
+
+// DELETE USER (DELETE)
+void DeleteUser(QueueNode*& tail, QueueNode*& head);
+
+int main() {
+	const string INSTRUCTIONS[] = { "Play the game", "View Records", "Delete User" };
+	const int MAX = end(INSTRUCTIONS) - begin(INSTRUCTIONS);
+	const int MAX_NUMBERS = 10;
+
+	int score = 0;
+	int choice = 0;
+	int counter = 0;
+	QueueNode* head = nullptr, * tail = nullptr;
+
+	//STORAGE OF THE ANSWER OF THE USER
+	string answerList[MAX_NUMBERS];
+	string checkList[MAX_NUMBERS] = { "","","","","","","","","","" };
+
+	// 1-Question, 2-Choices 3-Answer
+	string questionList[3][MAX_NUMBERS] = {
+
+		{ "Constellation Occured between December 22 - January 19", "Also known as The Virgin or Maiden", "It represents passion, energy, courage, and leadership", "Its name is Latin for crab",
+	"Its symbol is the Twins, Castor and Pollux", "Constellation Occured between October 23 - November 21", "its symbol being a bull", "It is The archer, a centaur with a bow and arrow. ", "It appears between February 19th to March 20th", "represent a cup bearer or water bearer, which is what its name means in Latin." },
+
+	{ "\n [A] Aries \n [B] Capricorn \n [C] Virgo \n [D] Gemini \n", "\n[A] Taurus \n [B] Capricorn \n [C] Virgo \n [D] Gemini \n", "\n[A] Aries \n [B] Pisces \n [C] Virgo \n [D] Sagittarius \n", "\n[A] Aries \n [B] Cancer \n [C] Scorpio \n [D] Gemini \n",
+	"\n[A] Aries \n [B] Aquarius \n [C] Virgo \n [D] Gemini \n", "\n[A] Aries \n [B] Capricorn \n [C] Scorpio \n [D] Gemini \n", "\n[A] Taurus \n [B] Aries \n [C] Scorpio \n [D] Gemini \n", "\n[A] Virgo \n [B] Scorpio \n [C] Gemini \n [D] Sagittarius \n", "\n[A] Gemini \n [B] Scorpio \n [C] Virgo \n [D] Pisces \n", "\n[A] Aquarius \n [B] Capricorn \n [C] Scorpio \n [D] Virgo \n" },
+
+	{ "B", "C", "A", "B", "D", "C", "A", "D", "D", "A" }
+	};
+
+	do {
+		MainMenu(INSTRUCTIONS, MAX, choice);
+
+		switch (choice) {
+		case 1:
+			CreateData(head, tail, counter);
+			Greetings();
+			QuestionGenerator(MAX_NUMBERS, questionList);
+			AnswerGenerator(MAX_NUMBERS, answerList);
+			CheckingAnswer(score, MAX_NUMBERS, answerList, checkList, questionList);
+			break;
+
+		case 2:
+			ViewUsers(head, checkList);
+			break;
+
+		case 3:
+			DeleteUser(tail, head);
+			break;
+		case 0:
+			exit(0);
+		}
+	} while (true);
+};
+
+void MainMenu(const string INSTRUCTIONS[], const int MAX, int& choice) {
+	cout << "Main Menu: \n\n";
+	if (MAX > 0) {
+		for (int i = 0; i < MAX; i++) {
+			cout << i + 1 << ": " << INSTRUCTIONS[i] << endl;
+		}
+		cout << "0. Exit\n";
+		cout << "::";
+		cin >> choice;
+	}
+	else {
+		cout << "No Functions Yet are Available\n\n\n";
+	}
+	system("cls");
+}
+
+void EnterInstruction(string instruction, string& data) {
+	cout << instruction;
+	getline(cin, data);
+}
+
+
+UserInfo EnterData(int& counter) {
+	UserInfo data;
+
+	cout << "Fill up the following information:\n";
+	cin.ignore();
+	EnterInstruction("Enter Name: ", data.name);
+
+	data.id = counter;
+	system("cls");
+	return data;
+}
+
+void CreateData(QueueNode*& head, QueueNode*& tail, int& counter) {
+	QueueNode* temp = new QueueNode;
+
+	if (head) {
+		temp->data = EnterData(counter);
+
+		tail->next = temp;
+
+		tail = temp;
+
+		cout << "Player Information Added\n\n";
+	}
+
+	else {
+		temp->data = EnterData(counter);
+
+		head = temp;
+		tail = temp;
+
+		cout << "First Player Created\n\n";
+	}
+
+	counter++;
+}
+
+void Greetings() {
+	cout << " Welcome to Constellation game quiz\n";
+	cout << "Instructions:\n";
+	cout << "[1] Answer the following questions related to Constellation\n";
+	cout << "[2] The game is compose of 10 questions\n";
+	cout << "[3] Each correct answer is equivalent to 1pt\n";
+	cout << "[4] Score as high as you can! Goodluck!\n";
+	cout << "IMPORTANT NOTICE!\n";
+	cout << "[1] When entering your answer always Use UPPERCASE!\n";
+	cout << "For Example:\n 1. A - CORRECT! \n 1. a - INCORRECT! \n ";
+	system("pause");
+	system("cls");
+}
+
+void QuestionGenerator(const int MAX_NUMBERS, string questionList[1][10]) {
+	cout << "Here are the following Questions:\n";
+	for (int i = 0; i < MAX_NUMBERS; i++) {
+		cout << i + 1 << ". " << questionList[0][i] << questionList[1][i] << endl;
+	}
+}
+
+void AnswerGenerator(const int MAX_NUMBERS, string answerList[10]) {
+	string answer;
+	cout << "Enter Your Answer \n";
+	for (int i = 0; i < MAX_NUMBERS; i++) {
+		cout << i + 1 << ". ";
+		cin >> answer;
+		answerList[i] = answer;
+	}
+}
+
+UserInfo CheckingAnswer(int& score, const int MAX_NUMBERS, string answerList[10], string checkList[10], string questionList[2][10]) {
+	UserInfo data;
+	system("pause");
+	system("cls");
+	cout << "Computing your score!\n";
+	system("pause");
+	system("cls");
+	for (int i = 0; i < MAX_NUMBERS; i++) {
+		if (answerList[i] == questionList[2][i]) {
+			checkList[i] = "Correct";
+			score++;
+		}
+		else {
+			checkList[i] = "InCorrect";
+		}
+	}
+	data.score = score;
+	cout << "Your Final Score: " << score << " out of " << MAX_NUMBERS << endl;
+	system("pause");
+	system("cls");
+	return data;
+}
+
+
+void UserList(QueueNode* head) {
+	QueueNode* curr;
+	UserInfo data;
+	int counter = 1;
+
+	if (!head) return;
+
+	curr = head;
+
+	do {
+		cout << counter << ". " << curr->data.name << "| ID: " << curr->data.id << "| Score:" << curr->data.score << endl;
+
+		if (!curr->next) {
+			return; // 5th step
+		}
+
+		curr = curr->next;
+		counter++;
+	} while (true);
+}
+
+void SearchUser(QueueNode* head, string checkList[10]) {
+	QueueNode* curr = head;
+	UserInfo data;
+	int searchId;
+
+	UserList(head);
+	cout << "Search for ID: ";
+	cin >> searchId;
+
+	curr = head;
+	do {
+		while (curr) {
+
+			if (curr->data.id == searchId) {
+				system("pause");
+				system("cls");
+				cout << "Name: " << curr->data.name
+					<< " Score:" << curr->data.score << endl;
+				for (int i = 0; i < 10; i++) {
+					cout << i + 1 << ". " << checkList[i] << endl;
+				}
+			}
+			curr = curr->next;
+		}
+	} while (true);
+}
+
+void ViewUsers(QueueNode* head, string checkList[10]) {
+	cout << "Full Enrollees List:\n";
+	if (head) {
+		do {
+			int choice;
+
+			UserList(head);
+			cout << "----------\n"
+				<< "1. Check Full Details\n"
+				<< "0. exit\n"
+				<< ":: ";
+			cin >> choice;
+
+			switch (choice) {
+			case 1:
+				SearchUser(head, checkList);
+				break;
+			case 0:
+				return;
+			default:
+				cout << "Select only from options.\n";
+				system("pause");
+				system("cls");
+				continue;
+			}
+		} while (true);
+	}
+	else {
+		cout << "There is no to do list yet\n\n";
+		system("pause");
+		system("cls");
+	}
+}
+
+void DeleteUser(QueueNode*& tail, QueueNode*& head)
+{
+	int wtf = 0;
+	QueueNode* curr = nullptr, * prevCurr = nullptr;
+	int counter = 1;
+
+	if (head == nullptr)
+	{
+		cout << "There is no item on storage!\n\n";
+
+		system("pause");
+		system("cls");
+		return;
+	}
+
+	curr = head;
+
+	while (curr) {
+		cout << counter << ". " << curr->data.name << " | ID: " << curr->data.id
+			<< " | Score: " << curr->data.score << endl;
+
+		curr = curr->next;
+		counter++;
+	}
+
+	cout << "Input ID to delete: ";
+	cin >> wtf;
+
+	curr = head;
+
+	do {
+		if (curr->data.id == wtf) {
+			if (curr == head) {
+				head = head->next;
+				delete curr;
+			}
+			else if (curr == tail) {
+				tail = prevCurr;
+				prevCurr->next = nullptr;
+				delete curr;
+			}
+			else {
+				prevCurr->next = curr->next;
+				delete curr;
+			}
+
+			return;
+		}
+		else {
+			prevCurr = curr;
+			curr = curr->next;
+		}
+	} while (curr != nullptr);
+}
