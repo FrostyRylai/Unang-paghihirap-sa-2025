@@ -37,9 +37,15 @@ PlayList Conversion(PlayList& data);
 // COMPUTATION OF OVERALLDURATION
 void OverAllDurationComputation(int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec);
 
+// UPDATE
+void UpdateSong(QueueNode* head, int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec);
+
+// DELETE
+void DeleteSong(QueueNode*& tail, QueueNode*& head);
+
 int main()
 {
-	const string INSTRUCTIONS[] = { "Add Song", "View PlayList", "Delete Song" };
+	const string INSTRUCTIONS[] = { "Add Song", "View PlayList", "Update Song", "Delete Song" };
 	const int MAX = end(INSTRUCTIONS) - begin(INSTRUCTIONS);
 	int choice = 0;
 	int counter = 0;
@@ -63,6 +69,11 @@ int main()
 			break;
 
 		case 3:
+			UpdateSong(head, overAllDuration,  overAllHour, overAllMin, overAllSec);
+			break;
+
+		case 4:
+			DeleteSong(tail, head);
 			break;
 		case 0:
 			exit(0);
@@ -234,4 +245,90 @@ void ViewPlaylist(QueueNode* head, int& overAllHour, int& overAllMin, int& overA
 		system("pause");
 		system("cls");
 	}
-};
+}
+
+// UPDATE Song
+void UpdateSong(QueueNode* head, int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec) {
+	if (!head) { // Check if list is empty
+		cout << "No items in the list to update.\n";
+	}
+	int searchID;
+	PlayListSong(head, overAllHour, overAllMin, overAllSec);
+	cout << "Enter the ID of the node you want to update: ";
+	cin >> searchID;
+
+	QueueNode* curr = head;
+
+	// Search for the node with the given ID
+	while (curr) {
+		if (curr->data.id == searchID) {
+			cout << "Updating Item with ID: " << searchID << endl;
+			cin.ignore();
+			EnterInstruction("New Song Title: ", curr->data.title);
+			EnterInstruction("New Song Artist: ", curr->data.artist);
+			EnterInstruction("New Song Genre: ", curr->data.genre);
+			InputInstruction("New Song Duration: ", curr->data.duration);
+			cout << "Song updated successfully!\n";
+		}
+		curr = curr->next;
+	}
+
+	cout << "Item with ID " << searchID << " not found.\n";
+}
+
+// DELETE
+void DeleteSong(QueueNode*& tail, QueueNode*& head)
+{
+	PlayList data;
+	int wtf = 0;
+	QueueNode* curr = nullptr, * prevCurr = nullptr;
+	int counter = 1;
+
+	if (head == nullptr)
+	{
+		cout << "There is no item on storage!\n\n";
+
+		system("pause");
+		system("cls");
+		return;
+	}
+
+	curr = head;
+
+	while (curr) {
+		cout << counter << ". " << curr->data.title << " | ID: " << curr->data.id
+			<< " | Duration: " << curr->data.min << " min " << curr->data.sec << "sec" << endl;
+
+		curr = curr->next;
+		counter++;
+	}
+
+	cout << "Input ID to delete: ";
+	cin >> wtf;
+
+	curr = head;
+
+	do {
+		if (curr->data.id == wtf) {
+			if (curr == head) {
+				head = head->next;
+				delete curr;
+			}
+			else if (curr == tail) {
+				tail = prevCurr;
+				prevCurr->next = nullptr;
+				delete curr;
+			}
+			else {
+				prevCurr->next = curr->next;
+				delete curr;
+			}
+
+			return;
+		}
+		else {
+			prevCurr = curr;
+			curr = curr->next;
+		}
+	} while (curr != nullptr);
+}
