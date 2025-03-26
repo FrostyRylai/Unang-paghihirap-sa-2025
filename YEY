@@ -1,0 +1,237 @@
+#include <array>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct PlayList {
+    int id = 0;
+    int duration = 0;
+	int min = 0;
+	int sec = 0;
+    string genre = "";
+	string title = "";
+	string artist = "";
+};
+
+struct QueueNode {
+    PlayList data;
+
+    QueueNode* next = nullptr;
+};
+
+// MAIN MENU
+void MainMenu(const string INSTRUCTIONS[], const int MAX, int& choice);
+
+// ADD SONG
+void CreateSong(QueueNode*& head, QueueNode*& tail, int& counter, int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec);
+
+// VIEW PLAYLIST
+void ViewPlaylist(QueueNode* head, int& overAllHour, int& overAllMin, int& overAllSec);
+void PlayListSong(QueueNode* head, int& overAllHour, int& overAllMin, int& overAllSec); //traverselist
+void SearchSong(QueueNode* head, int& overAllHour, int& overAllMin, int& overAllSec);
+
+// COMPUTATION OF DURATION
+PlayList Conversion(PlayList& data);
+
+// COMPUTATION OF OVERALLDURATION
+void OverAllDurationComputation(int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec);
+
+int main()
+{
+	const string INSTRUCTIONS[] = { "Add Song", "View PlayList", "Delete Song" };
+	const int MAX = end(INSTRUCTIONS) - begin(INSTRUCTIONS);
+	int choice = 0;
+	int counter = 0;
+	int overAllDuration = 0;
+	int overAllMin = 0;
+	int overAllSec = 0;
+	int overAllHour = 0;
+
+	QueueNode* head = nullptr, * tail = nullptr;
+
+	do {
+		MainMenu(INSTRUCTIONS, MAX, choice);
+
+		switch (choice) {
+		case 1:
+			CreateSong(head, tail, counter, overAllDuration, overAllHour, overAllMin, overAllSec);
+			break;
+
+		case 2:
+			ViewPlaylist(head, overAllHour, overAllMin, overAllSec);
+			break;
+
+		case 3:
+			break;
+		case 0:
+			exit(0);
+		}
+	} while (true);
+};
+    
+void MainMenu(const string INSTRUCTIONS[], const int MAX, int& choice) {
+	cout << "Main Menu: \n\n";
+	if (MAX > 0) {
+		for (int i = 0; i < MAX; i++) {
+			cout << i + 1 << ": " << INSTRUCTIONS[i] << endl;
+		}
+		cout << "0. Exit\n";
+		cout << "::";
+		cin >> choice;
+	}
+	else {
+		cout << "No Functions Yet are Available\n\n\n";
+	}
+	system("cls");
+}
+
+void EnterInstruction(string instruction, string& data) {
+	cout << instruction;
+	getline(cin, data);
+}
+
+void InputInstruction(string instruction, int& data) {
+	cout << instruction << endl;
+	cin >> data;
+}
+
+PlayList Conversion(PlayList& data) {
+	data.min = data.duration / 60;
+	data.sec = data.duration % 60;
+	cout << data.min;
+	cout << data.sec;
+	return data;
+}
+
+
+void OverAllDurationComputation(int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec) {
+	overAllSec = overAllDuration % 60;
+	overAllMin = overAllDuration / 60;
+	overAllHour = overAllMin / 60;
+}
+
+PlayList EnterData(int& counter, int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec) {
+	PlayList data;
+	cout << "Fill up the following information:\n";
+	cin.ignore();
+	EnterInstruction("Enter Title: ", data.title);
+	EnterInstruction("Enter Artist: ", data.artist);
+	EnterInstruction("Enter Genre: ", data.genre);
+
+	InputInstruction("Enter duration: ", data.duration);
+	data.id = counter;
+	overAllDuration += data.duration;
+	OverAllDurationComputation(overAllDuration, overAllHour, overAllMin, overAllSec);
+	Conversion(data);
+	system("cls");
+	return data;
+}
+
+void CreateSong(QueueNode*& head, QueueNode*& tail, int& counter, int& overAllDuration, int& overAllHour, int& overAllMin, int& overAllSec) {
+	QueueNode* temp = new QueueNode;
+
+	if (head) {
+		temp->data = EnterData(counter, overAllDuration, overAllHour, overAllMin, overAllSec);
+
+		tail->next = temp;
+
+		tail = temp;
+
+		cout << "Song Added to Playlist\n\n";
+	}
+
+	else {
+		temp->data = EnterData(counter, overAllDuration, overAllHour, overAllMin, overAllSec);
+
+		head = temp;
+		tail = temp;
+
+		cout << "First song Created to Playlist\n\n";
+	}
+
+	counter++;
+}
+
+void PlayListSong(QueueNode* head, int& overAllHour, int& overAllMin, int& overAllSec) {
+	QueueNode* curr;
+	PlayList data;
+	int counter = 1;
+
+	if (!head) return;
+
+	curr = head;
+	cout << "Overall Duration of songs: " << overAllHour << " Hour " << overAllMin << " Min " << overAllSec << "Sec" << endl;
+	do {
+		cout << counter << ". " << "| ID: " << curr->data.id << "| Song:" << curr->data.title << "| Duration: " << curr->data.min << " min " << curr->data.sec << " sec " << endl;
+
+		if (!curr->next) {
+			return; // 5th step
+		}
+
+		curr = curr->next;
+		counter++;
+	} while (true);
+}
+
+void SearchSong(QueueNode* head, int& overAllHour, int& overAllMin, int& overAllSec) {
+	QueueNode* curr = head;
+	int WhatToFind;
+
+	PlayListSong( head, overAllHour, overAllMin, overAllSec);
+	cout << "ID to check full details: ";
+	cin >> WhatToFind;
+
+	system("cls");
+
+	while (curr) {
+		if (curr->data.id == WhatToFind) {
+			cout << curr->data.id << ". " << curr->data.title
+				<< " | Artist: " << curr->data.artist
+				<< " | Gnere: " << curr->data.genre << endl
+				<< "Duration: "
+				<< curr->data.min << " min " << curr->data.sec << " sec ";
+			system("pause");
+			system("cls");
+			return;
+		}
+
+		curr = curr->next;
+	}
+
+	system("cls");
+}
+
+void ViewPlaylist(QueueNode* head, int& overAllHour, int& overAllMin, int& overAllSec) {
+	cout << "View PlayList:\n";
+	if (head) {
+		do {
+			int choice;
+
+			PlayListSong(head, overAllHour, overAllMin, overAllSec);
+			cout << "----------\n"
+				<< "1. Check Full Details\n"
+				<< "0. exit\n"
+				<< ":: ";
+			cin >> choice;
+
+			switch (choice) {
+			case 1:
+				SearchSong(head, overAllHour, overAllMin, overAllSec);
+				break;
+			case 0:
+				return;
+			default:
+				cout << "Select only from options.\n";
+				system("pause");
+				system("cls");
+				continue;
+			}
+		} while (true);
+	}
+	else {
+		cout << "There is no to do list yet\n\n";
+		system("pause");
+		system("cls");
+	}
+};
